@@ -1,5 +1,6 @@
 require 'resque'
-Resque.redis = 'localhost:6379'
+redis_config = YAML.load_file(Rails.root + 'config/redis.yml')
+Resque.redis = redis_config[Rails.env]
 
 require 'resque_scheduler'
 require 'resque_scheduler/server'

@@ -1,0 +1,3 @@
+development: localhost:6379
+test: localhost:6379
+production: redis://redistogo:138c95107a1435a2d8afedfeed86dd52@jack.redistogo.com:10511/
