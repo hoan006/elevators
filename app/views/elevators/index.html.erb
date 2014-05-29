@@ -2,6 +2,11 @@
 .left {
   float: left;
 }
+.clear {
+  clear: both;
+  padding-top: 10px;
+}
+
 .hidden {
   display: none;
 }
@@ -15,19 +20,19 @@
   display: inline-block;
   width: 60px;
 }
-.indicator {
+.indicator, .legend {
   border: 1px solid #dddddd;
   display: inline-block;
   width: 40px;
   height: 20px;
 }
-.indicator.idle {
+.indicator.idle, .legend.idle {
   background-color: #dddddd;
 }
-.indicator.opening {
+.indicator.opening, .legend.opening {
   background-color: #ffff00;
 }
-.indicator.running {
+.indicator.running, .legend.running {
   background-color: #ff0000;
 }
 .elevator {
@@ -99,6 +104,21 @@
     </div>
   <% end %>
 <div>
+<div class='clear'>
+  <h3>Legends</h3>
+  <div>
+    <div class='legend'></div>
+    <span>No elevator</span>
+    <div class='legend idle'></div>
+    <span>Idle</span>
+  </div>
+  <div>
+    <div class='legend opening'></div>
+    <span>Opening</span>
+    <div class='legend running'></div>
+    <span>Running</span>
+  </div>
+</div>
 
 <script type="text/javascript">
 $('.touch-up-outside').click(function() {
