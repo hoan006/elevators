@@ -1,0 +1,5 @@
+runner:
+  cron: "*/30 * * * *"
+  class: ElevatorRunner
+  queue: elevator_runner
+  description: "Running elevator endlessly"

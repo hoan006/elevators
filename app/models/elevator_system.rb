@@ -16,7 +16,7 @@ class ElevatorSystem
   
   # trigger when someone waiting for elevator at some floor touch the DOWN button on the wall
   def touch_down_outside(floor)
-    return if floor == 1
+    return if floor == 0
     dispatch_touch(floor, Elevator::DOWN)
   end
   

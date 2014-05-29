@@ -20,7 +20,7 @@ class Elevator
     @num_floors = num_floors
     @state = IDLE
     @direction = UP
-    @current_floor = 1
+    @current_floor = 0 # '1' floor
     @inside_floors = []
     @outside_floors = []
   end

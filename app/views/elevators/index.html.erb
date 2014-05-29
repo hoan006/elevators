@@ -1,0 +1,167 @@
+<style type="text/css">
+.left {
+  float: left;
+}
+.hidden {
+  display: none;
+}
+#outside {
+  margin-right: 30px;
+}
+.outside-floor {
+  margin-bottom: 5px;
+}
+.floor-label {
+  display: inline-block;
+  width: 60px;
+}
+.indicator {
+  border: 1px solid #dddddd;
+  display: inline-block;
+  width: 40px;
+  height: 20px;
+}
+.indicator.idle {
+  background-color: #dddddd;
+}
+.indicator.opening {
+  background-color: #ffff00;
+}
+.indicator.running {
+  background-color: #ff0000;
+}
+.elevator {
+  border: 1px solid #0000ff;
+  display: inline-block;
+  width: 90px;
+  margin-right: 10px;
+  padding: 20px 0px;
+  text-align: center;
+}
+.status {
+  font-weight: bold;
+  font-size: 18px;
+  margin-bottom: 5px;
+}
+.link-button {
+  text-decoration: none;
+}
+.elevator-button {
+  margin: 5px;
+  display: inline-block;
+  border: 1px solid #dddddd;
+  border-radius: 10px;
+  width: 30px;
+  height: 30px;
+  box-sizing: border-box;
+  padding: 6px;
+  text-align: center;
+}
+.touched {
+  background-color: #ffff00;
+}
+</style>
+<div>
+  <h3>Config</h3>
+  <%= form_tag change_configs_path do %>
+    Number of elevators: <%= text_field_tag "e", params[:e] || 2 %>
+    Number of floors: <%= text_field_tag "f", params[:f] || 15 %>
+    <%= submit_tag "Change configs" %>
+  <% end %>
+  <%= link_to "Resque", "/resque" %>
+</div>
+<div id='outside' class='left'>
+  <h2>Outside</h2>
+  <% (@system.elevators.first.num_floors - 1).downto(0).each do |i| %>
+    <div class='outside-floor'>
+      <div class='floor-number hidden'><%= i %></div>
+      <div class='floor-label'>Floor <%= i + 1 %>:</div>
+      <% @system.elevators.size.times do |j| %>
+        <div id='<%= "f#{i}-e#{j}" %>' class='indicator'></div>
+      <% end %>
+      <a href='#' id='<%= "f#{i}-up" %>' class='touch-up-outside'>Up</a>
+      <a href='#' id='<%= "f#{i}-down" %>' class='touch-down-outside'>Down</a>
+    </div>
+  <% end %>
+</div>
+<div id='inside'>
+  <h2>Inside</h2>
+  <% @system.elevators.size.times do |j| %>
+    <div class='elevator'>
+      <div class='elevator-number hidden'><%= j %></div>
+      <div class='status' id='<%= "e#{j}-status" %>'></div>
+      <% (@system.elevators.first.num_floors - 1).downto(0).each do |i| %>
+        <a href='#' id='<%= "e#{j}-f#{i}-button"%>' class='link-button'>
+          <div class='floor-number hidden'><%= i %></div>
+          <div class='elevator-button'><%= i + 1 %></div>
+        </a>
+      <% end %>
+    </div>
+  <% end %>
+<div>
+
+<script type="text/javascript">
+$('.touch-up-outside').click(function() {
+  touchOutside(this, 'up');
+  return false;
+});
+
+$('.touch-down-outside').click(function() {
+  touchOutside(this, 'down');
+  return false;
+});
+
+function touchOutside(that, dir) {
+  if ($(that).hasClass('touched')) return;
+  $(that).addClass('touched');
+  var floor = $(that).prevAll('.floor-number').html();
+  $.ajax({
+    method: 'POST',
+    url: '/touch_outside',
+    data: {
+      floor: floor,
+      direction: dir
+    }
+  }).done(function(data) {
+    data;
+  });
+}
+
+$('.link-button').click(function() {
+  var button = $(this).find(">:first-child");
+  if (button.hasClass('touched')) return;
+  button.addClass('touched');
+  var elevator = $(this).prevAll('.elevator-number').html();
+  var floor = button.html();
+  $.ajax({
+    method: 'POST',
+    url: '/touch_inside',
+    data: {
+      floor: floor,
+      elevator: elevator
+    }
+  }).done(function(data) {
+    data;
+  });
+  return false;
+});
+
+$(document).ready(function() {
+  $.ajax({
+    method: 'POST',
+    url: '/update_state'
+  }).done(function(data) {
+    data;
+  });
+
+  setInterval(function() {
+    $.ajax({
+      method: 'POST',
+      url: '/update_state'
+    }).done(function(data) {
+      data;
+    });
+  }, 1000);
+  
+});
+</script>
