@@ -15,8 +15,8 @@ $('.indicator').removeClass('idle opening running');
   <% elsif elevator.state == Elevator::OPENING %>
     statusBar.html("OPEN");
     currentFloor.addClass('opening');
-    console.log('#' + '<%= "f#{elevator.current_floor.to_i}-#{elevator.direction == Elevator::UP ? "up" : "down"}" %>');
-    $('#' + '<%= "f#{elevator.current_floor}-#{elevator.direction == Elevator::UP ? "up" : "down"}" %>').removeClass('touched');
+    $('#' + '<%= "f#{elevator.current_floor.to_i}-up" %>').removeClass('touched');
+    $('#' + '<%= "f#{elevator.current_floor.to_i}-down" %>').removeClass('touched');
   <% elsif elevator.state == Elevator::RUNNING %>
     <% if elevator.direction == Elevator::UP %>
       statusBar.html("UP");

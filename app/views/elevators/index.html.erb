@@ -84,8 +84,14 @@
       <% @system.elevators.size.times do |j| %>
         <div id='<%= "f#{i}-e#{j}" %>' class='indicator'></div>
       <% end %>
-      <a href='#' id='<%= "f#{i}-up" %>' class='touch-up-outside'>Up</a>
-      <a href='#' id='<%= "f#{i}-down" %>' class='touch-down-outside'>Down</a>
+      <% if i < @system.elevators.first.num_floors - 1 %>
+        <a href='#' id='<%= "f#{i}-up" %>' class='touch-up-outside'>Up</a>
+      <% else %>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+      <% end %>
+      <% if i > 0 %>
+        <a href='#' id='<%= "f#{i}-down" %>' class='touch-down-outside'>Down</a>
+      <% end %>
     </div>
   <% end %>
 </div>
@@ -148,11 +154,11 @@ function touchOutside(that, dir) {
 }
 
 $('.link-button').click(function() {
-  var button = $(this).find(">:first-child");
-  if (button.hasClass('touched')) return;
+  var button = $(this).find('.elevator-button');
+  if (button.hasClass('touched')) return false;
   button.addClass('touched');
   var elevator = $(this).prevAll('.elevator-number').html();
-  var floor = button.html();
+  var floor = $(this).find('.floor-number').html();
   $.ajax({
     method: 'POST',
     url: '/touch_inside',

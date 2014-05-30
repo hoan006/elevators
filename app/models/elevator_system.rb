@@ -50,7 +50,7 @@ class ElevatorSystem
     self.elevators.each do |elevator|
       estimated_time = (elevator.current_floor - floor).abs / Elevator::SPEED_PER_TICK # time to move
       floors_to_open = elevator.floors_to_go.select{ |f| elevator.direction == Elevator::UP ? (f > floor) : (f < floor) }
-      estimated_time += floors_to_open # time to open on each target floor before it reaches this 'floor'
+      estimated_time += floors_to_open.size # time to open on each target floor before it reaches this 'floor'
       if best_estimated_time.nil? || best_estimated_time > estimated_time
         best_estimated_time = estimated_time
         best_elevator = elevator
