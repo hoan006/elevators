@@ -10,7 +10,7 @@ class ElevatorRunner
         Rails.cache.write("elevator_system", @system)
       end
       sleep(1.0)
-      break if Time.now - start_time > 30 * 3600
+      break if Time.now - start_time > 30 * 60
     end
   end
 end
